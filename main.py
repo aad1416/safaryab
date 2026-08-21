@@ -18,8 +18,8 @@ try:
     raw = pr.get(url)
     js: dict = orjson.loads(raw.content)
     for i in js.get("items"):
-        if i["fair"] / 10000 < min_price and datetime.fromisoformat(i["depart"][0]["departure_datetime"]).time() < time(*max_time):
-            flight_list.append((i["fair"] , datetime.fromisoformat(i["depart"][0]["departure_datetime"])))
+        if i["fare"] / 10000 < min_price and datetime.fromisoformat(i["depart"][0]["departure_datetime"]).time() < time(*max_time):
+            flight_list.append((i["fare"] , datetime.fromisoformat(i["depart"][0]["departure_datetime"])))
     if flight_list:
         pr.post("https://safar.aad1416.workers.dev/_discordbot" , json = flight_list)
 except Exception as e:
