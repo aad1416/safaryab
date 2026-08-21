@@ -1,6 +1,6 @@
 from datetime import datetime, time
 import primp
-import orjson
+import orjson, traceback
 
 
 min_price = 8500
@@ -18,9 +18,10 @@ try:
     raw = pr.get(url)
     js: dict = orjson.loads(raw.content)
     for i in js.get("items"):
-        if i["fare"] / 10000 < min_price and datetime.fromisoformat(i["depart"][0]["departure_datetime"]).time() < time(*max_time):
-            flight_list.append((i["fare"] , datetime.fromisoformat(i["depart"][0]["departure_datetime"])))
+        if (0 < i["fare"] / 10000 < min_price) and (datetime.fromisoformat(i["depart"][0]["departure_datetime"]).time() < time(*max_time)):
+            flight_list.append((i["fare"] , i["depart"][0]["departure_datetime"]))
     if flight_list:
         pr.post("https://safar.aad1416.workers.dev/_discordbot" , json = flight_list)
 except Exception as e:
-    print(e)
+    err = [e.__str__(), traceback.format_exc()]
+    pr.post("https://safar.aad1416.workers.dev/_discordbot" , json = err)
